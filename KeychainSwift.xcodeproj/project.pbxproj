@@ -48,7 +48,6 @@
 		7ED6C9AC1B1C133500FE8090 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7ED6C9AA1B1C133500FE8090 /* LaunchScreen.xib */; };
 		7ED6C9BF1B1C13AA00FE8090 /* KeychainSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED6C96C1B1C118F00FE8090 /* KeychainSwift.framework */; };
 		7ED6C9C01B1C13AA00FE8090 /* KeychainSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED6C96C1B1C118F00FE8090 /* KeychainSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		7EE5B9A11E32F6D400AA56FF /* KeychainSwiftCBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE5B9A01E32F6D400AA56FF /* KeychainSwiftCBridge.swift */; };
 		C7E1DE4C1E4B7C9F003818F6 /* ConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E1DE4A1E4B7C9F003818F6 /* ConcurrencyTests.swift */; };
 		F271A1AE23BE071800FCC3B9 /* AllKeysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F271A1AD23BE071800FCC3B9 /* AllKeysTests.swift */; };
 		F271A1AF23BE082500FCC3B9 /* AllKeysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F271A1AD23BE071800FCC3B9 /* AllKeysTests.swift */; };
@@ -155,7 +154,6 @@
 		7ED6C9AB1B1C133500FE8090 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		7ED6C9C61B1C16BC00FE8090 /* concatenate_swift_files.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = concatenate_swift_files.sh; sourceTree = "<group>"; };
 		7ED6C9C91B1C16EE00FE8090 /* KeychainSwiftDistrib.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainSwiftDistrib.swift; sourceTree = "<group>"; };
-		7EE5B9A01E32F6D400AA56FF /* KeychainSwiftCBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainSwiftCBridge.swift; sourceTree = "<group>"; };
 		C7E1DE4A1E4B7C9F003818F6 /* ConcurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrencyTests.swift; sourceTree = "<group>"; };
 		F271A1AD23BE071800FCC3B9 /* AllKeysTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllKeysTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -332,7 +330,6 @@
 			children = (
 				7ED6C9A11B1C133500FE8090 /* AppDelegate.swift */,
 				7ED6C9A31B1C133500FE8090 /* ViewController.swift */,
-				7EE5B9A01E32F6D400AA56FF /* KeychainSwiftCBridge.swift */,
 				7ED6C9A51B1C133500FE8090 /* Main.storyboard */,
 				7ED6C9A81B1C133500FE8090 /* Images.xcassets */,
 				7ED6C9AA1B1C133500FE8090 /* LaunchScreen.xib */,
@@ -797,7 +794,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ED6C9A41B1C133500FE8090 /* ViewController.swift in Sources */,
-				7EE5B9A11E32F6D400AA56FF /* KeychainSwiftCBridge.swift in Sources */,
 				7ED6C9A21B1C133500FE8090 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
