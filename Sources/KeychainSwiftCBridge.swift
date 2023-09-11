@@ -173,4 +173,36 @@ public class KeychainSwiftCBridge: NSObject {
 	open func clear() -> Bool {
 		return keychain.clear()
 	}
+
+	
+	//	MARK: Account extension
+	
+	@objc (passwordForAccount:)
+	open func password(account: KeychainAccount) -> String? {
+		return keychain.password(account: account)
+	}
+	
+	@objc (dataForAccount:)
+	open func data(account: KeychainAccount) -> Data? {
+		return keychain.data(account: account)
+	}
+	
+	@objc (deletePasswordForAccount:)
+	@discardableResult
+	open func delete(account: KeychainAccount) -> Bool {
+		return keychain.deletePassword(account: account);
+	}
+	
+	@objc (setPassword:forAccount:)
+	@discardableResult
+	open func set(_ value: String, forAccount account: KeychainAccount) -> Bool {
+		return keychain.set(value, account: account)
+	}
+	
+	@objc (setData:forAccount:)
+	@discardableResult
+	open func setData(_ value: Data, forAccount account: KeychainAccount) -> Bool {
+		return keychain.set(value, account: account)
+	}
+	
 }
