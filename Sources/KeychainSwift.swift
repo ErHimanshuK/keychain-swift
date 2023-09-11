@@ -387,7 +387,7 @@ open class KeychainSwift {
 			return items;
 		}
 		var result: [String: Any] = items
-		result[KeychainSwiftConstants.attrSynchronizable] = addingItems == true ? true : kSecAttrSynchronizableAny
+		result[KeychainSwiftConstants.attrSynchronizable] = addingItems ? true : kSecAttrSynchronizableAny
 		return result
 	}
 	
@@ -402,7 +402,7 @@ open class KeychainSwift {
 	 */
 	func addDataProtection(_ items: [String: Any]) -> [String: Any] {
 		var result: [String: Any] = items
-		result[KeychainSwiftConstants.attrUseDataProtection] = useFileKeychain == true ? false : true
+		result[KeychainSwiftConstants.attrUseDataProtection] = useFileKeychain ? false : true
 		return result
 	}
 	
