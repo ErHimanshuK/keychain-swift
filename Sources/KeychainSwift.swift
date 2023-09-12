@@ -212,7 +212,6 @@ open class KeychainSwift {
 			query[KeychainSwiftConstants.returnData] =  kCFBooleanTrue
 		}
 		
-		query = addLabel(query, label: label)
 		query = addServiceName(query, override: service)
 		query = addDataProtection(query)
 		query = addAccessGroupWhenPresent(query)
@@ -387,13 +386,14 @@ open class KeychainSwift {
 			return items;
 		}
 		var result: [String: Any] = items
+		//	When we are adding items, set to yes, otherwise get any
 		result[KeychainSwiftConstants.attrSynchronizable] = addingItems ? true : kSecAttrSynchronizableAny
 		return result
 	}
 	
 	/**
 	 
-	 Adds `kSecUseDataProtectionKeychain` item to the dictionary when the `useFileKeychain` property is true.
+	 Adds `kSecUseDataProtectionKeychain` item to the dictionary based on the `useFileKeychain` property.
 	 
 	 - parameter items: The dictionary where the kSecUseDataProtectionKeychain items will be added when requested.
 	 
@@ -402,7 +402,7 @@ open class KeychainSwift {
 	 */
 	func addDataProtection(_ items: [String: Any]) -> [String: Any] {
 		var result: [String: Any] = items
-		result[KeychainSwiftConstants.attrUseDataProtection] = useFileKeychain ? false : true
+		result[KeychainSwiftConstants.attrUseDataProtection] = !useFileKeychain
 		return result
 	}
 	
