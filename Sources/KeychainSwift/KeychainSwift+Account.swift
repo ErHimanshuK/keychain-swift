@@ -11,11 +11,17 @@ import KeychainBase
 extension KeychainSwift {
 	
 	func password(account: KeychainAccount) -> String? {
-		return get(account.keychainAccountName, service: account.keychainServiceName, label: account.keychainLabelName)
+		guard let pw = get(account.keychainAccountName, service: account.keychainServiceName, label: account.keychainLabelName) else {
+			return migratePassword(account.keychainAccountName, service: account.keychainServiceName, label: account.keychainLabelName)
+		}
+		return pw
 	}
 	
 	func data(account: KeychainAccount) -> Data? {
-		return getData(account.keychainAccountName, service: account.keychainServiceName, label: account.keychainLabelName)
+		guard let data = getData(account.keychainAccountName, service: account.keychainServiceName, label: account.keychainLabelName) else {
+			return migrateData(account.keychainAccountName, service: account.keychainServiceName, label: account.keychainLabelName)
+		}
+		return data
 	}
 	
 	func deletePassword(account: KeychainAccount) -> Bool {
