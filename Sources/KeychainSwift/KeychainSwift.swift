@@ -347,7 +347,7 @@ open class KeychainSwift {
 	open func migratePassword(_ key: String, service: String, label: String! = nil) -> String? {
 		let fileKeychain = KeychainSwift()
 		fileKeychain.useFileKeychain = true
-		var value = fileKeychain.get(key, service: service)
+		let value = fileKeychain.get(key, service: service)
 		if let pw = value, set(pw, forKey: key, service: service, label: label) {
 			fileKeychain.delete(key, service: service)
 		}
@@ -367,7 +367,7 @@ open class KeychainSwift {
 	open func migrateData(_ key: String, service: String, label: String! = nil) -> Data? {
 		let fileKeychain = KeychainSwift()
 		fileKeychain.useFileKeychain = true
-		var value = fileKeychain.getData(key, service: service)
+		let value = fileKeychain.getData(key, service: service)
 		if let pw = value, set(pw, forKey: key, service: service, label: label) {
 			fileKeychain.delete(key, service: service)
 		}
