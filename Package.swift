@@ -15,11 +15,14 @@ let package = Package(
     dependencies: [
     ],
     targets: [
+		.target(
+			name: "KeychainBase",
+			dependencies: [],
+			publicHeadersPath: "Includes"
+		),
         .target(
           name: "KeychainSwift",
-          dependencies: [],
-          path: "Sources",
-          exclude: ["Info.plist"]
+          dependencies: ["KeychainBase"]
         ),
         .testTarget(
             name: "KeychainSwiftTests",

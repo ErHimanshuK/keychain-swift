@@ -6,14 +6,7 @@
 //
 
 import Foundation
-
-@objc
-public protocol KeychainAccount: NSObjectProtocol {
-	var keychainPrefix: String { get}
-	var keychainLabelName: String { get}
-	var keychainServiceName: String { get}
-	var keychainAccountName: String { get}
-}
+import KeychainBase
 
 extension KeychainSwift {
 	
