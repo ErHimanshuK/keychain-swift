@@ -1,5 +1,6 @@
 import Security
 import Foundation
+import KeychainBase
 
 /**
  
@@ -58,19 +59,19 @@ public class KeychainSwiftCBridge: NSObject {
 		get { return keychain.useFileKeychain }
 	}
 	
-	@objc (set:forKey:)
+	@objc (setPassword:forKey:)
 	@discardableResult
 	open func set(_ value: String, forKey key: String) -> Bool {
 		return keychain.set(value, forKey: key)
 	}
 	
-	@objc (set:forKey:service:)
+	@objc (setPassword:forKey:service:)
 	@discardableResult
 	open func set(_ value: String, forKey key: String, service: String) -> Bool {
 		return keychain.set(value, forKey: key, service: service)
 	}
 	
-	@objc (set:forKey:service:label:)
+	@objc (setPassword:forKey:service:label:)
 	@discardableResult
 	open func set(_ value: String, forKey key: String, service: String, label: String) -> Bool {
 		return keychain.set(value, forKey: key, service: service, label: label)
@@ -173,8 +174,35 @@ public class KeychainSwiftCBridge: NSObject {
 	open func clear() -> Bool {
 		return keychain.clear()
 	}
-
 	
+	
+	//	MARK: Legacy Management
+
+	@objc (migratePasswordForKey:service:)
+	@discardableResult
+	open func migratePassword(_ key: String, service: String) -> String? {
+		return keychain.migratePassword(key, service: service)
+	}
+	
+	@objc (migratePasswordForKey:service:label:)
+	@discardableResult
+	open func migratePassword(_ key: String, service: String, label: String) -> String? {
+		return keychain.migratePassword(key, service: service, label: label)
+	}
+
+	@objc (migrateDataForKey:service:)
+	@discardableResult
+	open func migrateData(_ key: String, service: String) -> Data? {
+		return keychain.migrateData(key, service: service)
+	}
+	
+	@objc (migrateDataForKey:service:label:)
+	@discardableResult
+	open func migrateData(_ key: String, service: String, label: String) -> Data? {
+		return keychain.migrateData(key, service: service, label: label)
+	}
+	
+
 	//	MARK: Account extension
 	
 	@objc (passwordForAccount:)

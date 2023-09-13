@@ -59,6 +59,104 @@ open class KeychainSwift {
 		self.serviceName = service
 	}
 	
+	
+	//	MARK: - Get Methods
+	
+	/**
+	 
+	 Retrieves the text value from the keychain that corresponds to the given key.
+	 
+	 - parameter key: The key that is used to read the keychain item.
+	 - parameter service: The service name that is used to read the keychain item.
+	 - parameter label: The label that is used to read the keychain item.
+	 - returns: The text value from the keychain. Returns nil if unable to read the item.
+	 
+	 */
+	open func get(_ key: String, service: String? = nil, label: String? = nil) -> String? {
+		if let data = getData(key, service: service, label: label) {
+			
+			if let currentString = String(data: data, encoding: .utf8) {
+				return currentString
+			}
+			
+			lastResultCode = -67853 // errSecInvalidEncoding
+		}
+		
+		return nil
+	}
+	
+	/**
+	 
+	 Retrieves the data from the keychain that corresponds to the given key.
+	 
+	 - parameter key: The key that is used to read the keychain item.
+	 - parameter service: The service name that is used to read the keychain item.
+	 - parameter label: The label that is used to read the keychain item.
+	 - parameter asReference: If true, returns the data as reference (needed for things like NEVPNProtocol).
+	 - returns: The text value from the keychain. Returns nil if unable to read the item.
+	 
+	 */
+	open func getData(_ key: String,
+					  service: String? = nil, label: String? = nil,
+					  asReference: Bool = false) -> Data? {
+		// The lock prevents the code to be run simultaneously
+		// from multiple threads which may result in crashing
+		lock.lock()
+		defer { lock.unlock() }
+		
+		let prefixedKey = keyWithPrefix(key)
+		
+		var query: [String: Any] = [
+			KeychainSwiftConstants.klass       : kSecClassGenericPassword,
+			KeychainSwiftConstants.attrAccount : prefixedKey,
+			KeychainSwiftConstants.matchLimit  : kSecMatchLimitOne
+		]
+		
+		if asReference {
+			query[KeychainSwiftConstants.returnReference] = kCFBooleanTrue
+		} else {
+			query[KeychainSwiftConstants.returnData] =  kCFBooleanTrue
+		}
+		
+		query = addServiceName(query, override: service)
+		query = addDataProtection(query)
+		query = addAccessGroupWhenPresent(query)
+		query = addSynchronizableIfRequired(query, addingItems: false)
+		lastQueryParameters = query
+		
+		var result: AnyObject?
+		
+		lastResultCode = withUnsafeMutablePointer(to: &result) {
+			SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
+		}
+		
+		if lastResultCode == noErr {
+			return result as? Data
+		}
+		
+		return nil
+	}
+	
+	/**
+	 
+	 Retrieves the boolean value from the keychain that corresponds to the given key.
+	 
+	 - parameter key: The key that is used to read the keychain item.
+	 - parameter service: The service name that is used to read the keychain item.
+	 - parameter label: The label that is used to read the keychain item.
+	 - returns: The boolean value from the keychain. Returns nil if unable to read the item.
+	 
+	 */
+	open func getBool(_ key: String,
+					  service: String? = nil, label: String? = nil) -> Bool? {
+		guard let data = getData(key, service: service, label: label) else { return nil }
+		guard let firstBit = data.first else { return nil }
+		return firstBit == 1
+	}
+	
+	
+	//	MARK: - Set Methods
+	
 	/**
 	 
 	 Stores the text value in the keychain item under the given key.
@@ -156,97 +254,8 @@ open class KeychainSwift {
 		return set(data, forKey: key, service: service, label: label, withAccess: access)
 	}
 	
-	/**
-	 
-	 Retrieves the text value from the keychain that corresponds to the given key.
-	 
-	 - parameter key: The key that is used to read the keychain item.
-	 - parameter service: The service name that is used to read the keychain item.
-	 - parameter label: The label that is used to read the keychain item.
-	 - returns: The text value from the keychain. Returns nil if unable to read the item.
-	 
-	 */
-	open func get(_ key: String, service: String? = nil, label: String? = nil) -> String? {
-		if let data = getData(key, service: service, label: label) {
-			
-			if let currentString = String(data: data, encoding: .utf8) {
-				return currentString
-			}
-			
-			lastResultCode = -67853 // errSecInvalidEncoding
-		}
-		
-		return nil
-	}
-	
-	/**
-	 
-	 Retrieves the data from the keychain that corresponds to the given key.
-	 
-	 - parameter key: The key that is used to read the keychain item.
-	 - parameter service: The service name that is used to read the keychain item.
-	 - parameter label: The label that is used to read the keychain item.
-	 - parameter asReference: If true, returns the data as reference (needed for things like NEVPNProtocol).
-	 - returns: The text value from the keychain. Returns nil if unable to read the item.
-	 
-	 */
-	open func getData(_ key: String,
-					  service: String? = nil, label: String? = nil,
-					  asReference: Bool = false) -> Data? {
-		// The lock prevents the code to be run simultaneously
-		// from multiple threads which may result in crashing
-		lock.lock()
-		defer { lock.unlock() }
-		
-		let prefixedKey = keyWithPrefix(key)
-		
-		var query: [String: Any] = [
-			KeychainSwiftConstants.klass       : kSecClassGenericPassword,
-			KeychainSwiftConstants.attrAccount : prefixedKey,
-			KeychainSwiftConstants.matchLimit  : kSecMatchLimitOne
-		]
-		
-		if asReference {
-			query[KeychainSwiftConstants.returnReference] = kCFBooleanTrue
-		} else {
-			query[KeychainSwiftConstants.returnData] =  kCFBooleanTrue
-		}
-		
-		query = addServiceName(query, override: service)
-		query = addDataProtection(query)
-		query = addAccessGroupWhenPresent(query)
-		query = addSynchronizableIfRequired(query, addingItems: false)
-		lastQueryParameters = query
-		
-		var result: AnyObject?
-		
-		lastResultCode = withUnsafeMutablePointer(to: &result) {
-			SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
-		}
-		
-		if lastResultCode == noErr {
-			return result as? Data
-		}
-		
-		return nil
-	}
-	
-	/**
-	 
-	 Retrieves the boolean value from the keychain that corresponds to the given key.
-	 
-	 - parameter key: The key that is used to read the keychain item.
-	 - parameter service: The service name that is used to read the keychain item.
-	 - parameter label: The label that is used to read the keychain item.
-	 - returns: The boolean value from the keychain. Returns nil if unable to read the item.
-	 
-	 */
-	open func getBool(_ key: String,
-					  service: String? = nil, label: String? = nil) -> Bool? {
-		guard let data = getData(key, service: service, label: label) else { return nil }
-		guard let firstBit = data.first else { return nil }
-		return firstBit == 1
-	}
+
+	//	MARK: - Deletion Methods
 	
 	/**
 	 
@@ -265,40 +274,6 @@ open class KeychainSwift {
 		defer { lock.unlock() }
 		
 		return deleteNoLock(key, service: service)
-	}
-	
-	/**
-	 Return all keys from keychain
-	 
-	 - returns: An string array with all keys from the keychain.
-	 
-	 */
-	public var allKeys: [String] {
-		var query: [String: Any] = [
-			KeychainSwiftConstants.klass : kSecClassGenericPassword,
-			KeychainSwiftConstants.returnData : true,
-			KeychainSwiftConstants.returnAttributes: true,
-			KeychainSwiftConstants.returnReference: true,
-			KeychainSwiftConstants.matchLimit: KeychainSwiftConstants.secMatchLimitAll
-		]
-		
-		query = addServiceName(query, override: nil)
-		query = addDataProtection(query)
-		query = addAccessGroupWhenPresent(query)
-		query = addSynchronizableIfRequired(query, addingItems: false)
-		
-		var result: AnyObject?
-		
-		let lastResultCode = withUnsafeMutablePointer(to: &result) {
-			SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
-		}
-		
-		if lastResultCode == noErr {
-			return (result as? [[String: Any]])?.compactMap {
-				$0[KeychainSwiftConstants.attrAccount] as? String } ?? []
-		}
-		
-		return []
 	}
 	
 	/**
@@ -354,6 +329,86 @@ open class KeychainSwift {
 		lastResultCode = SecItemDelete(query as CFDictionary)
 		
 		return lastResultCode == noErr
+	}
+	
+	
+	//	MARK: - Legacy Migration Code
+	
+	/**
+	 
+	 Migrates a password from a file keychain if needed to iCloud keychain and returns the string.
+	 
+	 - parameter key: The key that is used to read the keychain item.
+	 - parameter service: The service name that is used to read the keychain item.
+	 - parameter label: The new label that would be added for the migrated password.
+	 - returns: The text value from the keychain. Returns nil if unable to read the item.
+	 
+	 */
+	open func migratePassword(_ key: String, service: String, label: String! = nil) -> String? {
+		let fileKeychain = KeychainSwift()
+		fileKeychain.useFileKeychain = true
+		var value = fileKeychain.get(key, service: service)
+		if let pw = value, set(pw, forKey: key, service: service, label: label) {
+			fileKeychain.delete(key, service: service)
+		}
+		return value
+	}
+	
+	/**
+	 
+	 Migrates data from a file keychain if needed to iCloud keychain and returns the data.
+	 
+	 - parameter key: The key that is used to read the keychain item.
+	 - parameter service: The service name that is used to read the keychain item.
+	 - parameter label: The new label that would be added for the migrated password.
+	 - returns: The Data value from the keychain. Returns nil if unable to read the item.
+	 
+	 */
+	open func migrateData(_ key: String, service: String, label: String! = nil) -> Data? {
+		let fileKeychain = KeychainSwift()
+		fileKeychain.useFileKeychain = true
+		var value = fileKeychain.getData(key, service: service)
+		if let pw = value, set(pw, forKey: key, service: service, label: label) {
+			fileKeychain.delete(key, service: service)
+		}
+		return value
+	}
+
+	
+	//	MARK: - Helper Functions
+	
+	/**
+	 Return all keys from keychain
+	 
+	 - returns: An string array with all keys from the keychain.
+	 
+	 */
+	public var allKeys: [String] {
+		var query: [String: Any] = [
+			KeychainSwiftConstants.klass : kSecClassGenericPassword,
+			KeychainSwiftConstants.returnData : true,
+			KeychainSwiftConstants.returnAttributes: true,
+			KeychainSwiftConstants.returnReference: true,
+			KeychainSwiftConstants.matchLimit: KeychainSwiftConstants.secMatchLimitAll
+		]
+		
+		query = addServiceName(query, override: nil)
+		query = addDataProtection(query)
+		query = addAccessGroupWhenPresent(query)
+		query = addSynchronizableIfRequired(query, addingItems: false)
+		
+		var result: AnyObject?
+		
+		let lastResultCode = withUnsafeMutablePointer(to: &result) {
+			SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
+		}
+		
+		if lastResultCode == noErr {
+			return (result as? [[String: Any]])?.compactMap {
+				$0[KeychainSwiftConstants.attrAccount] as? String } ?? []
+		}
+		
+		return []
 	}
 	
 	/// Returns the key with currently set prefix.
