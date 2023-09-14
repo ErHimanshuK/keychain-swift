@@ -18,7 +18,7 @@ class KeychainSwiftTests: XCTestCase {
 
   func testSet() {
     XCTAssertTrue(obj.set("hello :)", forKey: "key 1"))
-    XCTAssertEqual("hello :)", obj.get("key 1")!)
+    XCTAssertEqual("hello :)", obj.get("key 1"))
   }
   
   func testSet_usesAccessibleWhenUnlockedByDefault() {
@@ -42,9 +42,11 @@ class KeychainSwiftTests: XCTestCase {
     
     XCTAssertTrue(obj.set(data, forKey: "key 123"))
     
-    let dataFromKeychain = obj.getData("key 123")!
-    let textFromKeychain = String(data: dataFromKeychain, encoding:String.Encoding.utf8)!
-    XCTAssertEqual("hello world", textFromKeychain)
+	  XCTAssertNotNil(obj.getData("key 123"))
+	  if let dataFromKeychain = obj.getData("key 123") {
+		  let textFromKeychain = String(data: dataFromKeychain, encoding:String.Encoding.utf8)!
+		  XCTAssertEqual("hello world", textFromKeychain)
+	  }
   }
   
   func testSetData_usesAccessibleWhenUnlockedByDefault() {
@@ -61,9 +63,11 @@ class KeychainSwiftTests: XCTestCase {
 
   func testSetBool() {
     XCTAssertTrue(obj.set(true, forKey: "key bool"))
-    XCTAssertTrue(obj.getBool("key bool")!)
+	  XCTAssertNotNil(obj.getBool("key bool"))
+    XCTAssertTrue(obj.getBool("key bool") ?? false)
     XCTAssertTrue(obj.set(false, forKey: "key bool"))
-    XCTAssertFalse(obj.getBool("key bool")!)
+	  XCTAssertNotNil(obj.getBool("key bool"))
+    XCTAssertFalse(obj.getBool("key bool") ?? false)
   }
 
   func testSetBool_usesAccessibleWhenUnlockedByDefault() {
@@ -102,6 +106,6 @@ class KeychainSwiftTests: XCTestCase {
 
     obj.delete("key 1")
     
-    XCTAssertEqual("hello two", obj.get("key 2")!)
+    XCTAssertEqual("hello two", obj.get("key 2"))
   }
 }

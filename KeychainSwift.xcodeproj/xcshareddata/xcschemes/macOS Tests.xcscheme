@@ -20,6 +20,20 @@
                ReferencedContainer = "container:KeychainSwift.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7E3A6B7A1D3F6779007C5B1F"
+               BuildableName = "macOS Demo.app"
+               BlueprintName = "macOS Demo"
+               ReferencedContainer = "container:KeychainSwift.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -66,15 +80,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7E3A6B5F1D3F62C2007C5B1F"
-            BuildableName = "macOS Tests.xctest"
-            BlueprintName = "macOS Tests"
-            ReferencedContainer = "container:KeychainSwift.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

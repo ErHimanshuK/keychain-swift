@@ -30,7 +30,7 @@ class ViewController: NSViewController {
 
   @IBAction func onSaveTapped(_ sender: AnyObject) {
     keychain.synchronizable = synchronizableButton.state == NSControl.StateValue.on
-    keychain.set(textField.stringValue, forKey: TegKeychainDemo_keyName)
+    keychain.set(textField.stringValue, forKey: TegKeychainDemo_keyName, label: "Label: \(textField.stringValue)")
     errorLabel.stringValue = "Result code: \(keychain.lastResultCode)"
     updateValueLabel()
   }

@@ -32,8 +32,8 @@ class KeychainWithPrefixTests: XCTestCase {
     XCTAssertTrue(prefixed.set("prefixed", forKey: key))
     XCTAssertTrue(nonPrefixed.set("non prefixed", forKey: key))
     
-    XCTAssertEqual("prefixed", prefixed.get(key)!)
-    XCTAssertEqual("non prefixed", nonPrefixed.get(key)!)
+    XCTAssertEqual("prefixed", prefixed.get(key))
+    XCTAssertEqual("non prefixed", nonPrefixed.get(key))
   }
   
   
@@ -49,14 +49,17 @@ class KeychainWithPrefixTests: XCTestCase {
     XCTAssertTrue(prefixed.set(dataPrefixed, forKey: key))
     XCTAssertTrue(nonPrefixed.set(dataNonPrefixed, forKey: key))
 
+	  XCTAssertNotNil(prefixed.getData(key))
+	  if let dataFromKeychainPrefixed = prefixed.getData(key) {
+		  let textFromKeychainPrefixed = String(data: dataFromKeychainPrefixed, encoding: .utf8)!
+		  XCTAssertEqual("prefixed", textFromKeychainPrefixed)
+	  }
     
-    let dataFromKeychainPrefixed = prefixed.getData(key)!
-    let textFromKeychainPrefixed = String(data: dataFromKeychainPrefixed, encoding: .utf8)!
-    XCTAssertEqual("prefixed", textFromKeychainPrefixed)
-    
-    let dataFromKeychainNonPrefixed = nonPrefixed.getData(key)!
-    let textFromKeychainNonPrefixed = String(data: dataFromKeychainNonPrefixed, encoding: .utf8)!
-    XCTAssertEqual("non prefixed", textFromKeychainNonPrefixed)
+	  XCTAssertNotNil(nonPrefixed.getData(key))
+	  if let dataFromKeychainNonPrefixed = nonPrefixed.getData(key) {
+		  let textFromKeychainNonPrefixed = String(data: dataFromKeychainNonPrefixed, encoding: .utf8)!
+		  XCTAssertEqual("non prefixed", textFromKeychainNonPrefixed)
+	  }
   }
   
   // MARK: - Delete
