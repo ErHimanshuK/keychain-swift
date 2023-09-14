@@ -16,6 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, readonly) NSString * keychainServiceName;
 @property (strong, readonly) NSString * keychainLabelName;
 
+@property (copy, readonly) NSString * hostname;
+@property (readonly) NSInteger portNumber;
+@property (readonly) BOOL ssl;
+@property (copy, readonly) NSString * loginName;
+@property (strong, readonly) NSString * loginPassword;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -233,4 +233,9 @@ public class KeychainSwiftCBridge: NSObject {
 		return keychain.set(value, account: account)
 	}
 	
+	@objc (retrieveInfoForAccount:)
+	open func retrieve(_ account: KeychainAccount) -> [String: Any]? {
+		return keychain.retrieve(account: account)
+	}
+	
 }
