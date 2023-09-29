@@ -133,6 +133,11 @@ open class KeychainSwift {
 		if lastResultCode == noErr {
 			return result as? Data
 		}
+		else if lastResultCode == errSecInteractionNotAllowed {
+			//	This allows the Security system to finish unlocking the keychain
+			Thread.sleep(until: Date(timeIntervalSinceNow: 0.5))
+			return getData(key, service: service, label: label, asReference: asReference)
+		}
 		
 		return nil
 	}
