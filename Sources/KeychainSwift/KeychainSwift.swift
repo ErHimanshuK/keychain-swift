@@ -98,11 +98,13 @@ open class KeychainSwift {
 	 */
 	open func getData(_ key: String,
 					  service: String? = nil, label: String? = nil,
+					  lockNeeded: Bool = true,
 					  asReference: Bool = false) -> Data? {
 		// The lock prevents the code to be run simultaneously
 		// from multiple threads which may result in crashing
-		lock.lock()
-		defer { lock.unlock() }
+		if lockNeeded {
+			lock.lock()
+		}
 		
 		let prefixedKey = keyWithPrefix(key)
 		
@@ -131,14 +133,16 @@ open class KeychainSwift {
 		}
 		
 		if lastResultCode == noErr {
+			lock.unlock()
 			return result as? Data
 		}
 		else if lastResultCode == errSecInteractionNotAllowed {
 			//	This allows the Security system to finish unlocking the keychain
 			Thread.sleep(until: Date(timeIntervalSinceNow: 0.5))
-			return getData(key, service: service, label: label, asReference: asReference)
+			return getData(key, service: service, label: label, lockNeeded: false, asReference: asReference)
 		}
 		
+		lock.unlock()
 		return nil
 	}
 	
