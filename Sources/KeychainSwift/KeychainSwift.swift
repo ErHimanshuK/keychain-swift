@@ -46,7 +46,8 @@ open class KeychainSwift {
 	
 	
 	private let lock = NSLock()
-	
+	private let recurseMax: Int = 10
+
 	
 	/**
 	 
@@ -98,11 +99,17 @@ open class KeychainSwift {
 	 */
 	open func getData(_ key: String,
 					  service: String? = nil, label: String? = nil,
-					  lockNeeded: Bool = true,
+					  recurseCount: Int = 0,
 					  asReference: Bool = false) -> Data? {
+
+		guard recurseCount < recurseMax else {
+			lock.unlock()
+			return nil
+		}
+
 		// The lock prevents the code to be run simultaneously
 		// from multiple threads which may result in crashing
-		if lockNeeded {
+		if recurseCount == 0 {
 			lock.lock()
 		}
 		
@@ -132,18 +139,14 @@ open class KeychainSwift {
 			SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
 		}
 		
-		if lastResultCode == noErr {
-			lock.unlock()
-			return result as? Data
-		}
-		else if lastResultCode == errSecInteractionNotAllowed {
+		guard lastResultCode != errSecInteractionNotAllowed else {
 			//	This allows the Security system to finish unlocking the keychain
 			Thread.sleep(until: Date(timeIntervalSinceNow: 0.5))
-			return getData(key, service: service, label: label, lockNeeded: false, asReference: asReference)
+			return getData(key, service: service, label: label, recurseCount: recurseCount + 1, asReference: asReference)
 		}
 		
 		lock.unlock()
-		return nil
+		return result as? Data
 	}
 	
 	/**
