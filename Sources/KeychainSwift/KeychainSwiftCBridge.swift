@@ -29,7 +29,7 @@ import KeychainBase
 @objc (KeychainSwift)
 public class KeychainSwiftCBridge: NSObject {
 	let keychain = KeychainSwift()
-	
+		
 	@objc
 	open var lastResultCode: OSStatus {
 		get { return keychain.lastResultCode }
@@ -58,6 +58,13 @@ public class KeychainSwiftCBridge: NSObject {
 		set { keychain.useFileKeychain = newValue }
 		get { return keychain.useFileKeychain }
 	}
+	
+	@objc
+	open var overrideAccessOption: KeychainSwiftAccessOptions {
+		set { keychain.overrideAccessOption = newValue }
+		get { return keychain.overrideAccessOption }
+	}
+
 	
 	@objc (setPassword:forKey:)
 	@discardableResult

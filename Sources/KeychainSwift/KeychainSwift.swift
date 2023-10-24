@@ -44,6 +44,11 @@ open class KeychainSwift {
 	 */
 	open var useFileKeychain: Bool = false
 	
+	/**
+	 Set a default accessOptions override for the keychain
+	 */
+	open var overrideAccessOption: KeychainSwiftAccessOptions = .defaultOption
+	
 	
 	private let lock = NSLock()
 	private let recurseMax: Int = 10
@@ -219,7 +224,7 @@ open class KeychainSwift {
 		
 		deleteNoLock(key, service: service) // Delete any existing key before saving it
 		
-		let accessible = access?.value ?? KeychainSwiftAccessOptions.defaultOption.value
+		let accessible = access?.value ?? overrideAccessOption.value
 		
 		let prefixedKey = keyWithPrefix(key)
 		
