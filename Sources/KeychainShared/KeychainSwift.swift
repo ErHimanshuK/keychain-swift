@@ -455,6 +455,7 @@ open class KeychainSwift {
 	 - returns: the dictionary with kSecUseDataProtectionKeychain item added.
 	 
 	 */
+    @available(macOS 10.15, *)
 	func addDataProtection(_ items: [String: Any]) -> [String: Any] {
 		var result: [String: Any] = items
 		result[KeychainSwiftConstants.attrUseDataProtection] = !useFileKeychain

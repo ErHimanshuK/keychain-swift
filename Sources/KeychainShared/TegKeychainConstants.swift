@@ -26,7 +26,8 @@ public struct KeychainSwiftConstants {
 	public static var attrSynchronizable: String { return toString(kSecAttrSynchronizable) }
 	
 	/// Used for specifying data protection type (non file-based keychain) of keychain items.
-	public static var attrUseDataProtection: String { return toString(kSecUseDataProtectionKeychain) }
+    @available(macOS 10.15, *)
+    public static var attrUseDataProtection: String { return toString(kSecUseDataProtectionKeychain) }
 	
 	/// An item class key used to construct a Keychain search dictionary.
 	public static var klass: String { return toString(kSecClass) }
