@@ -30,6 +30,7 @@ open class KeychainSwift {
 	 */
 	open var synchronizable: Bool = false
 	
+    fileprivate var _useDataProtection: Bool = false
 	/**
 	 
 	 Specifies a service name to be used for all passwords.
@@ -446,21 +447,28 @@ open class KeychainSwift {
 		return result
 	}
 	
-	/**
-	 
-	 Adds `kSecUseDataProtectionKeychain` item to the dictionary based on the `useFileKeychain` property.
-	 
-	 - parameter items: The dictionary where the kSecUseDataProtectionKeychain items will be added when requested.
-	 
-	 - returns: the dictionary with kSecUseDataProtectionKeychain item added.
-	 
-	 */
     @available(macOS 10.15, *)
-	func addDataProtection(_ items: [String: Any]) -> [String: Any] {
-		var result: [String: Any] = items
-		result[KeychainSwiftConstants.attrUseDataProtection] = !useFileKeychain
-		return result
-	}
+    func useDataProtection(_ newValue: Bool) {
+        _useDataProtection = newValue
+    }
+    /**
+     
+     Adds `kSecUseDataProtectionKeychain` item to the dictionary based on the `useFileKeychain` property.
+     
+     - parameter items: The dictionary where the kSecUseDataProtectionKeychain items will be added when requested.
+     
+     - returns: the dictionary with kSecUseDataProtectionKeychain item added.
+     
+     */
+    func addDataProtection(_ items: [String: Any]) -> [String: Any] {
+        var result: [String: Any] = items
+        if #available(macOS 10.15, *), _useDataProtection {
+            result[KeychainSwiftConstants.attrUseDataProtection] = !useFileKeychain
+        } else {
+            // Fallback on earlier versions
+        }
+        return result
+    }
 	
 	/**
 	 
