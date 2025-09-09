@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "KeychainSwift",
 	defaultLocalization: "en",
-	platforms: [.iOS(.v12), .macOS(.v11), .watchOS(.v6), .tvOS(.v12)],
+    platforms: [.iOS(.v12), .macOS(.v10_13), .watchOS(.v6), .tvOS(.v12)],
     products: [
         .library(
 			name: "KeychainSwift",
