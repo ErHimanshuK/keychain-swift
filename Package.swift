@@ -8,7 +8,6 @@ let package = Package(
     products: [
         .library(
 			name: "KeychainSwift",
-			type:.dynamic,
 			targets: ["KeychainSwift"]
 		),
     ],
